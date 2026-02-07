@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import Navigation from "./components/Navigation";
 import MouseGradient from "./components/MouseGradient";
 import ThemeProvider from "./components/ThemeProvider";
@@ -44,6 +45,7 @@ export default function RootLayout({
             {children}
           </SmoothScroll>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
