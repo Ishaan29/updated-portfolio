@@ -4,7 +4,7 @@ import { createServerSupabaseClient, isValidCompanyId } from '@/lib/supabase';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { companyId, userAgent, referrer } = body;
+        const { companyId, channel, userAgent, referrer } = body;
 
         // Validate company ID
         if (!companyId || !isValidCompanyId(companyId)) {
@@ -20,6 +20,22 @@ export async function POST(request: NextRequest) {
             request.headers.get('x-real-ip') ||
             'unknown';
 
+        // Get geo info from Vercel headers
+        const city = request.headers.get('x-vercel-ip-city') || null;
+        const region = request.headers.get('x-vercel-ip-country-region') || null;
+        const country = request.headers.get('x-vercel-ip-country') || null;
+
+        // Parse user agent for device type
+        let deviceType = 'desktop';
+        if (userAgent) {
+            const ua = userAgent.toLowerCase();
+            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+                deviceType = 'tablet';
+            } else if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+                deviceType = 'mobile';
+            }
+        }
+
         // Create Supabase client
         const supabase = createServerSupabaseClient();
 
@@ -28,6 +44,11 @@ export async function POST(request: NextRequest) {
             .from('visits')
             .insert({
                 company_id: companyId,
+                channel: channel || 'organic',
+                device_type: deviceType,
+                city,
+                region,
+                country,
                 visited_at: new Date().toISOString(),
                 user_agent: userAgent || null,
                 referrer: referrer || null,

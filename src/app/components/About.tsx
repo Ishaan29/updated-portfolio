@@ -4,11 +4,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import { techStack, availabilityStatus } from "@/lib/constants";
 import ScrollReveal from "./ScrollReveal";
+import { useSectionTracking } from "@/lib/tracking";
 
 export default function About() {
+    const sectionRef = useSectionTracking("about_section") as React.RefObject<HTMLElement>;
+
     return (
         <section
             id="about"
+            ref={sectionRef}
             className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
             aria-label="About me"
         >

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
+import { trackEvent, useSectionTracking } from "@/lib/tracking";
 
 export default function Contact() {
     const [formData, setFormData] = React.useState({
@@ -27,9 +28,12 @@ export default function Contact() {
         }));
     };
 
+    const sectionRef = useSectionTracking("contact_section") as React.RefObject<HTMLElement>;
+
     return (
         <section
             id="contact"
+            ref={sectionRef}
             className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
         >
             <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-navy/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
@@ -105,6 +109,7 @@ export default function Contact() {
                         href="https://github.com/Ishaan29"
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEvent('click', 'github', { location: 'contact' })}
                         className="text-slate hover:text-green transition-colors"
                         aria-label="GitHub"
                     >
@@ -114,6 +119,7 @@ export default function Contact() {
                         href="https://www.linkedin.com/in/ishaanbajpai/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEvent('click', 'linkedin', { location: 'contact' })}
                         className="text-slate hover:text-green transition-colors"
                         aria-label="LinkedIn"
                     >

@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { sanitizeCompanyId } from '@/lib/supabase';
 import { setVisitId } from '@/lib/tracking';
 
-export default function CompanyTrackingPage({
+const CHANNELS = ['apollo', 'linkedin', 'app', 'gh-cold', 'referral', 'organic'];
+
+export default function TrackableLinkPage({
     params,
 }: {
-    params: Promise<{ company: string }>;
+    params: Promise<{ slug: string }>;
 }) {
     const router = useRouter();
 
@@ -17,7 +19,26 @@ export default function CompanyTrackingPage({
             try {
                 // Unwrap params promise
                 const unwrappedParams = await params;
-                const companyId = sanitizeCompanyId(unwrappedParams.company);
+                const rawSlug = unwrappedParams.slug || '';
+                
+                // Extract channel and company
+                let channel = 'organic';
+                let companyStr = rawSlug;
+                
+                for (const ch of CHANNELS) {
+                    if (rawSlug === ch) {
+                        channel = ch;
+                        companyStr = 'unknown'; // Visited just the channel link
+                        break;
+                    }
+                    if (rawSlug.startsWith(ch + '-')) {
+                        channel = ch;
+                        companyStr = rawSlug.substring(ch.length + 1);
+                        break;
+                    }
+                }
+                
+                const companyId = sanitizeCompanyId(companyStr);
 
                 // Log the visit
                 const response = await fetch('/api/track', {
@@ -27,6 +48,7 @@ export default function CompanyTrackingPage({
                     },
                     body: JSON.stringify({
                         companyId,
+                        channel,
                         userAgent: navigator.userAgent,
                         referrer: document.referrer || 'direct',
                     }),
@@ -50,10 +72,10 @@ export default function CompanyTrackingPage({
     }, [params, router]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-navy">
+        <div className="min-h-screen flex items-center justify-center bg-transparent">
             <div className="text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green"></div>
-                <p className="mt-4 text-slate">Redirecting...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#64ffda]"></div>
+                <p className="mt-4 text-[#8892b0]">Setting things up...</p>
             </div>
         </div>
     );
