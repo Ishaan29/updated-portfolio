@@ -17,8 +17,24 @@ export interface Visit {
     user_agent: string | null;
     referrer: string | null;
     ip_address: string | null;
+    channel?: string;
+    device_type?: string | null;
+    city?: string | null;
+    region?: string | null;
+    country?: string | null;
     created_at: string;
     visit_events?: VisitEvent[];
+}
+
+export interface OutreachLog {
+    id: string;
+    company_id: string;
+    channel: string;
+    action_type: string;
+    contact_name?: string | null;
+    notes?: string | null;
+    action_date: string;
+    created_at: string;
 }
 
 export interface VisitAnalytics {
@@ -44,6 +60,12 @@ export interface Database {
                 Row: Visit;
                 Insert: Partial<Visit>;
                 Update: Partial<Visit>;
+                Relationships: [];
+            };
+            outreach_logs: {
+                Row: OutreachLog;
+                Insert: Partial<OutreachLog>;
+                Update: Partial<OutreachLog>;
                 Relationships: [];
             };
         };

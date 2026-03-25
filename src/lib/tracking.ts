@@ -93,11 +93,9 @@ export const useSectionTracking = (sectionName: string) => {
                 if (entry.isIntersecting && !hasTrackedRef.current) {
                     trackEvent('scroll', sectionName, { action: 'viewed' });
                     hasTrackedRef.current = true;
-                    // Optional: unobserve after first view
-                    // observer.unobserve(currentRef); 
                 }
             },
-            { threshold: 0.3 } // Track when 30% of the section is visible
+            { threshold: 0.3 }
         );
 
         observer.observe(currentRef);
@@ -108,4 +106,48 @@ export const useSectionTracking = (sectionName: string) => {
     }, [sectionName]);
 
     return ref;
+};
+
+// Global hook for 30s heartbeat and scroll milestones (25%, 50%, 75%, 100%)
+export const useEngagementTracking = () => {
+    const trackedMilestones = useRef(new Set<number>());
+
+    useEffect(() => {
+        // 1. Heartbeat (every 30s)
+        const heartbeatInterval = setInterval(() => {
+            trackEvent('engagement', 'heartbeat', { 
+                action: 'ping',
+                interval: 30
+            });
+        }, 30000);
+
+        // 2. Scroll Milestones
+        const handleScroll = () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            
+            if (documentHeight <= 0) return;
+            
+            const scrollPercent = (window.scrollY / documentHeight) * 100;
+            const milestones = [25, 50, 75, 100];
+            
+            for (const milestone of milestones) {
+                if (scrollPercent >= milestone && !trackedMilestones.current.has(milestone)) {
+                    trackedMilestones.current.add(milestone);
+                    trackEvent('engagement', 'scroll_depth', { depth: milestone });
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            clearInterval(heartbeatInterval);
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+};
+
+export const trackCtaClick = (ctaName: string) => {
+    trackEvent('engagement', 'cta_click', { action: ctaName });
 };
