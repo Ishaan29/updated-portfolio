@@ -1,6 +1,15 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Database types
+export interface VisitEvent {
+    id: string;
+    visit_id: string;
+    event_type: string;
+    event_name: string;
+    metadata: Record<string, any>;
+    created_at: string;
+}
+
 export interface Visit {
     id: string;
     company_id: string;
@@ -9,6 +18,7 @@ export interface Visit {
     referrer: string | null;
     ip_address: string | null;
     created_at: string;
+    visit_events?: VisitEvent[];
 }
 
 export interface VisitAnalytics {

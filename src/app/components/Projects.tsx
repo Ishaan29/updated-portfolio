@@ -6,11 +6,15 @@ import { projects, otherProjects } from "@/lib/constants";
 import { Github, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ScrollReveal from "./ScrollReveal";
+import { trackEvent, useSectionTracking } from "@/lib/tracking";
 
 export default function Projects() {
+    const sectionRef = useSectionTracking("projects_section") as React.RefObject<HTMLElement>;
+
     return (
         <section
             id="projects"
+            ref={sectionRef}
             className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
             aria-label="Selected projects"
         >
@@ -35,6 +39,7 @@ export default function Projects() {
                                                 href={project.links.external || project.links.github}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                onClick={() => trackEvent('click', 'project_link', { project: project.title })}
                                                 aria-label={project.title}
                                             >
                                                 <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
@@ -97,6 +102,7 @@ export default function Projects() {
                                                 href={project.links.github}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                onClick={() => trackEvent('click', 'project_link', { project: project.title })}
                                                 aria-label={project.title}
                                             >
                                                 <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>

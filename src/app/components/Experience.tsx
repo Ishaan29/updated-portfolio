@@ -4,11 +4,15 @@ import React from "react";
 import { experiences, resumeUrl } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import ScrollReveal from "./ScrollReveal";
+import { trackEvent, useSectionTracking } from "@/lib/tracking";
 
 export default function Experience() {
+    const sectionRef = useSectionTracking("experience_section") as React.RefObject<HTMLElement>;
+
     return (
         <section
             id="experience"
+            ref={sectionRef}
             className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
             aria-label="Work experience"
         >
@@ -87,6 +91,7 @@ export default function Experience() {
                         href={resumeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEvent('click', 'resume_download', { location: 'experience' })}
                         className="inline-flex items-center gap-2 text-light-slate hover:text-green transition-colors group font-semibold"
                     >
                         View Full Résumé

@@ -6,6 +6,7 @@ import { Github, Linkedin, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ThemeToggle";
 import { resumeUrl } from "@/lib/constants";
+import { trackEvent } from "@/lib/tracking";
 
 const navLinks = [
     { name: "About", href: "#about" },
@@ -95,6 +96,7 @@ export default function Header() {
                         href={resumeUrl}
                         target="_blank"
                         rel="noreferrer noopener"
+                        onClick={() => trackEvent('click', 'resume_download', { location: 'header' })}
                         className="group inline-flex items-center gap-2 rounded-full border border-slate/20 bg-slate/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-lightest-slate transition hover:border-lightest-slate hover:bg-lightest-slate/10"
                     >
                         <FileText size={14} />
@@ -110,6 +112,7 @@ export default function Header() {
                         href="https://github.com/Ishaan29"
                         target="_blank"
                         rel="noreferrer noopener"
+                        onClick={() => trackEvent('click', 'github', { location: 'header' })}
                         aria-label="GitHub (opens in a new tab)"
                     >
                         <Github size={24} className="text-slate/40 transition hover:text-slate" />
@@ -121,6 +124,7 @@ export default function Header() {
                         href="https://www.linkedin.com/in/ishaanbajpai/"
                         target="_blank"
                         rel="noreferrer noopener"
+                        onClick={() => trackEvent('click', 'linkedin', { location: 'header' })}
                         aria-label="LinkedIn (opens in a new tab)"
                     >
                         <Linkedin size={24} className="text-slate/40 transition hover:text-slate" />
@@ -132,6 +136,7 @@ export default function Header() {
                         href="mailto:eshaangrad@gmail.com"
                         target="_blank"
                         rel="noreferrer noopener"
+                        onClick={() => trackEvent('click', 'email', { location: 'header' })}
                         aria-label="Email (opens in a new tab)"
                     >
                         <Mail size={24} className="text-slate/40 transition hover:text-slate" />

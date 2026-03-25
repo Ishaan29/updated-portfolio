@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { trackEvent } from "@/lib/tracking";
 
 export default function Hero() {
     return (
@@ -63,6 +64,7 @@ export default function Hero() {
                     href="/resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackEvent('click', 'resume_download', { location: 'hero' })}
                     className="inline-block rounded border border-slate px-8 py-4 font-mono text-sm text-slate transition-all hover:bg-slate/10 hover:-translate-y-1 hover:text-light-slate"
                 >
                     Resume

@@ -6,6 +6,7 @@ import MouseGradient from "./components/MouseGradient";
 import ThemeProvider from "./components/ThemeProvider";
 import ThemeToggle from "./components/ThemeToggle";
 import SmoothScroll from "./components/SmoothScroll";
+import AnalyticsInitializer from "./components/AnalyticsInitializer";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({
           <SmoothScroll>
             <MouseGradient />
             <ThemeToggle />
+            <AnalyticsInitializer />
             {children}
           </SmoothScroll>
         </ThemeProvider>

@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { sanitizeCompanyId } from '@/lib/supabase';
+import { setVisitId } from '@/lib/tracking';
 
 export default function CompanyTrackingPage({
     params,
@@ -19,7 +20,7 @@ export default function CompanyTrackingPage({
                 const companyId = sanitizeCompanyId(unwrappedParams.company);
 
                 // Log the visit
-                await fetch('/api/track', {
+                const response = await fetch('/api/track', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -30,6 +31,13 @@ export default function CompanyTrackingPage({
                         referrer: document.referrer || 'direct',
                     }),
                 });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.visitId) {
+                        setVisitId(data.visitId);
+                    }
+                }
             } catch (error) {
                 console.error('Failed to track visit:', error);
             } finally {

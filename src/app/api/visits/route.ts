@@ -35,10 +35,10 @@ export async function GET(request: NextRequest) {
         // Create Supabase client
         const supabase = createServerSupabaseClient();
 
-        // Build query
+        // Build query to fetch visits and their events
         let query = supabase
             .from('visits')
-            .select('*')
+            .select('*, visit_events(*)')
             .order('visited_at', { ascending: false })
             .limit(limit);
 
