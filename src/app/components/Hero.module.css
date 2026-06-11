@@ -1,0 +1,152 @@
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .heroGrid { grid-template-columns: 1fr; gap: 40px; }
+}
+.heroEyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.heroTitle {
+  font-size: clamp(44px, 6.4vw, 84px);
+  margin: 0 0 32px;
+  max-width: 14ch;
+  line-height: 1.05;
+  padding-bottom: 0.08em;
+}
+.heroTitle em {
+  font-style: italic;
+  color: var(--color-accent);
+  font-feature-settings: 'ss01' on;
+}
+.heroSub {
+  font-size: 17px;
+  color: var(--color-fg-muted);
+  max-width: 60ch;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+.heroCtas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 56px; }
+.heroMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 24px 0;
+}
+@media (max-width: 720px) {
+  .heroMetrics { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; }
+}
+.metric { padding: 0 16px; border-right: 1px solid var(--color-border); }
+.metric:last-child { border-right: 0; }
+@media (max-width: 720px) {
+  .metric:nth-child(2) { border-right: 0; }
+  .metric { border-bottom: 0; padding: 0 8px; }
+}
+.metricNum {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  margin-bottom: 4px;
+}
+.metricLabel { font-size: 12px; color: var(--color-fg-muted); line-height: 1.4; }
+.logoBar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  margin-top: 28px;
+}
+.logoPill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-fg-muted);
+  background: oklch(0.20 0.006 70 / 0.5);
+}
+.heroAside { position: sticky; top: 88px; }
+@media (max-width: 980px) { .heroAside { position: static; } }
+
+.cc {
+  border-radius: 10px;
+  background: oklch(0.11 0.005 70);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: 0 30px 80px -40px rgba(0,0,0,0.7);
+  font-family: var(--font-mono);
+}
+.ccHeader {
+  padding: 16px 18px 8px;
+}
+.ccBanner {
+  display: grid;
+  grid-template-columns: 1ch 34ch 1ch;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-fg-muted);
+  font-variant-ligatures: none;
+  font-feature-settings: normal;
+}
+.ccBannerRow { display: contents; }
+.ccBannerEdge { white-space: pre; }
+.ccBannerInner {
+  white-space: pre;
+  overflow: hidden;
+}
+.ccAccent { color: var(--color-accent); }
+.ccDim { color: var(--color-fg-dim); }
+.ccBody {
+  padding: 12px 18px 4px;
+  font-size: 12.5px;
+  line-height: 1.65;
+  min-height: 280px;
+}
+.ccLine { white-space: pre-wrap; animation: ccIn 0.18s ease-out; }
+@keyframes ccIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; } }
+.ccCm { color: var(--color-fg); }
+.ccUser { color: var(--color-fg); }
+.ccPrompt { color: var(--color-accent); margin-right: 4px; }
+.ccThink { color: var(--color-fg-dim); font-style: italic; }
+.ccThinkingDot { color: var(--color-accent); }
+.ccDots span {
+  opacity: 0;
+  animation: ccDot 1.4s infinite;
+}
+.ccDots span:nth-child(1) { animation-delay: 0s; }
+.ccDots span:nth-child(2) { animation-delay: 0.2s; }
+.ccDots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ccDot { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+.ccBullet { color: var(--color-fg); padding-left: 0; }
+.ccBulletMark { color: var(--color-accent); margin-right: 6px; }
+.ccOk { color: var(--color-good); }
+.ccInputRow {
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed oklch(0.30 0.008 70 / 0.5);
+}
+.ccPlaceholder { color: var(--color-fg-dim); }
+.ccCursor {
+  color: var(--color-accent);
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.ccFooter {
+  padding: 10px 18px;
+  border-top: 1px solid oklch(0.30 0.008 70 / 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  color: var(--color-fg-dim);
+  background: oklch(0.13 0.005 70);
+}
+.ccFootDot {
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-good);
+  margin-right: 6px;
+  vertical-align: 1px;
+}

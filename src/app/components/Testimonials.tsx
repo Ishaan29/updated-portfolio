@@ -1,63 +1,67 @@
 "use client";
 
-import React from "react";
-import { testimonials } from "@/lib/constants";
-import ScrollReveal from "./ScrollReveal";
+import React from 'react';
+import styles from './Testimonials.module.css';
+import { useSectionTracking } from '@/lib/tracking';
+
+const quotes = [
+  {
+    name: 'Pallavi Gajbhiye',
+    role: 'Engineering Manager · Gainsight',
+    relation: 'Managed Eshaan directly',
+    quote: 'Across multiple projects, he worked in and out of the problems given to him covering all the edge cases, which needed very little to no quality validation from QA. He is capable of building scalable solutions and writing code thats very easy to understand and maintain.',
+  },
+  {
+    name: 'Madgula Amit',
+    role: 'GenAI Engineer + Principal Engineer · Gainsight',
+    relation: 'Senior; worked on the same team',
+    quote: "I've worked with Eshaan for almost 2 years. He's an excellent team player, technical, and good problem solver. He's an expert in NodeJs, Java, Backend systems. We have worked in 3 projects together. I greatly appreciate his humility.",
+  },
+  {
+    name: 'Lavneesh Chandna',
+    role: 'Backend Software Engineer · Salesforce',
+    relation: 'Senior; worked on the same team',
+    quote: 'A rare combination of technical expertise and creativity. Consistently delivered high-quality code, with a deep understanding of the technologies being used, and always showed a keen interest in exploring new technologies and methodologies to improve our work.',
+  },
+  {
+    name: 'Vishwajeet Singh Chauhan',
+    role: 'Staff Engineer · ServiceNow',
+    relation: 'Senior; worked on the same team',
+    quote: "Quickly onboarded a new tech stack — excelled in Node.js while simultaneously working on Java backend systems. Strong ability to translate business requirements into technical solutions. Actively participated in knowledge sharing and mentorship.",
+  },
+];
 
 export default function Testimonials() {
-    return (
-        <section
-            id="colleagues"
-            className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
-            aria-label="What Colleagues Say"
-        >
-            <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-navy/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-                <h2 className="text-sm font-bold uppercase tracking-widest text-lightest-slate lg:sr-only">
-                    What Colleagues Say
-                </h2>
-            </div>
+  const sectionRef = useSectionTracking('Testimonials') as React.RefObject<HTMLElement>;
+  return (
+    <section id="says" ref={sectionRef}>
+      <div className="container">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">// 06 — what people who worked with me actually say</span>
+            <h2>The <em>peer review</em>.</h2>
+          </div>
+          <div className="head-aside">
+            Real quotes from former managers and senior teammates — open to direct reference calls; ask and I'll connect you.
+          </div>
+        </div>
 
-            <div>
-                <ul className="group/list">
-                    {testimonials.map((testimonial, index) => (
-                        <li key={index} className="mb-12">
-                            <ScrollReveal delay={index * 0.1}>
-                                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
-                                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-light-navy/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-
-                                    <div className="z-10 sm:col-span-8">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            {/* Avatar or Placeholder */}
-                                            <div className="h-12 w-12 rounded-full border-2 border-slate/20 bg-slate/10 flex-shrink-0 overflow-hidden">
-                                                {/* In a real scenario, we'd use testimonial.image if available */}
-                                                <div className="w-full h-full bg-light-navy flex items-center justify-center text-light-slate font-bold uppercase text-lg">
-                                                    {testimonial.name.split(' ').map(n => n[0]).join('')}
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <h3 className="font-medium leading-snug text-lightest-slate text-base">
-                                                    {testimonial.name}
-                                                </h3>
-                                                <p className="text-sm text-slate">
-                                                    {testimonial.role} at {testimonial.company}
-                                                </p>
-                                                <p className="text-xs text-slate/60 mt-0.5">
-                                                    {testimonial.connection}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-2 text-sm leading-relaxed text-slate italic">
-                                            "{testimonial.text}"
-                                        </div>
-                                    </div>
-                                </div>
-                            </ScrollReveal>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </section>
-    );
+        <div className={styles.refGrid}>
+          {quotes.map((q, i) => (
+            <figure key={i} className={styles.refCard}>
+              <svg className={styles.refQuote} width="22" height="18" viewBox="0 0 22 18" fill="none">
+                <path d="M0 18V10C0 4.477 4.477 0 10 0V4C7.79 4 6 5.79 6 8H10V18H0ZM12 18V10C12 4.477 16.477 0 22 0V4C19.79 4 18 5.79 18 8H22V18H12Z" fill="oklch(0.82 0.135 75 / 0.5)"/>
+              </svg>
+              <blockquote className={styles.refQuoteBody}>&ldquo;{q.quote}&rdquo;</blockquote>
+              <figcaption className={styles.refCite}>
+                <div className={styles.refName}>{q.name}</div>
+                <div className={`${styles.refRole} mono`}>{q.role}</div>
+                <div className={styles.refRel}>{q.relation}</div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

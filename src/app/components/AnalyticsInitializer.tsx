@@ -1,6 +1,6 @@
 'use client';
 
-import { useTimeTracking, useEngagementTracking } from '@/lib/tracking';
+import { useTimeTracking, useEngagementTracking, useOutboundTracking } from '@/lib/tracking';
 
 export default function AnalyticsInitializer() {
     // This hook will set up the event listeners for beforeunload and visibilitychange
@@ -9,6 +9,9 @@ export default function AnalyticsInitializer() {
     
     // Tracks heartbeat pings for accurate time-on-page and discrete scroll milestones
     useEngagementTracking();
+
+    // Tracks outbound link clicks and resume downloads
+    useOutboundTracking();
 
     return null; // This component doesn't render anything
 }

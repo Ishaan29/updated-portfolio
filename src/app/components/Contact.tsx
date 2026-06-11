@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { trackEvent, useSectionTracking } from "@/lib/tracking";
+import { socialLinks } from "@/lib/constants";
 
 export default function Contact() {
     const [formData, setFormData] = React.useState({
@@ -16,7 +17,7 @@ export default function Contact() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const { name, email, message } = formData;
-        const mailtoLink = `mailto:eshaangrad@gmail.com?subject=Portfolio Contact from ${name}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+        const mailtoLink = `${socialLinks.email}?subject=Portfolio Contact from ${name}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
         window.location.href = mailtoLink;
     };
 
@@ -106,7 +107,7 @@ export default function Contact() {
 
                 <div className="mt-20 flex justify-center gap-8 md:hidden">
                     <a
-                        href="https://github.com/Ishaan29"
+                        href={socialLinks.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => trackEvent('click', 'github', { location: 'contact' })}
@@ -116,7 +117,7 @@ export default function Contact() {
                         <Github size={24} />
                     </a>
                     <a
-                        href="https://www.linkedin.com/in/ishaanbajpai/"
+                        href={socialLinks.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => trackEvent('click', 'linkedin', { location: 'contact' })}
