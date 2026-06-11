@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import Navigation from "./components/Navigation";
-import MouseGradient from "./components/MouseGradient";
 import ThemeProvider from "./components/ThemeProvider";
-import ThemeToggle from "./components/ThemeToggle";
 import SmoothScroll from "./components/SmoothScroll";
 import AnalyticsInitializer from "./components/AnalyticsInitializer";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -22,6 +15,13 @@ const spaceGrotesk = Space_Grotesk({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
+});
+
+const instrumentSerif = Instrument_Serif({
+  weight: ["400"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-instrument-serif",
 });
 
 export const metadata: Metadata = {
@@ -35,14 +35,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-navy text-slate antialiased selection:bg-green selection:text-navy`}
-      >
-        <ThemeProvider>
+    <html
+      lang="en"
+      className={`scroll-smooth ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="antialiased selection:bg-accent selection:text-bg">
+        <ThemeProvider forcedTheme="amber">
           <SmoothScroll>
-            <MouseGradient />
-            <ThemeToggle />
             <AnalyticsInitializer />
             {children}
           </SmoothScroll>

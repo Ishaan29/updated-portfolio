@@ -1,0 +1,52 @@
+.ctaSection { padding-bottom: 32px; }
+.ctaCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+  background-image:
+    radial-gradient(600px 280px at 100% 0%, oklch(0.82 0.135 75 / 0.10), transparent 60%);
+}
+@media (max-width: 980px) { .ctaCard { grid-template-columns: 1fr; padding: 32px; gap: 32px; } }
+.ctaH { font-size: clamp(40px, 5.5vw, 72px); margin: 12px 0 18px; line-height: 1.05; }
+.ctaSub { color: var(--color-fg-muted); font-size: 16px; max-width: 50ch; margin: 0 0 28px; }
+.ctaActions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+.ctaList { display: flex; flex-direction: column; gap: 0; }
+.ctaRow {
+  display: grid; grid-template-columns: 100px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  font-size: 14px;
+}
+.ctaRow:last-child { border-bottom: 1px solid var(--color-border); }
+.ctaK { color: var(--color-fg-dim); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; align-self: center; }
+.ctaLink { color: var(--color-accent); text-decoration: none; transition: opacity 0.15s; }
+.ctaLink:hover { opacity: 0.7; }
+.ctaV { color: var(--color-fg-muted); }
+
+/* Cal.com embed */
+.calEmbed {
+  background: oklch(0.13 0.005 70);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  min-height: 580px;
+}
+.calLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 580px;
+  font-size: 12px;
+  color: var(--color-fg-muted);
+  letter-spacing: 0.06em;
+}
+
+/* Footer */
+.siteFooter { margin-top: 64px; padding: 24px 0; border-top: 1px solid var(--color-border); }
+.footerRow { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--color-fg-muted); letter-spacing: 0.02em; }

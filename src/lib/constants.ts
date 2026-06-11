@@ -1,3 +1,11 @@
+export const socialLinks = {
+    github: "https://github.com/Ishaan29",
+    linkedin: "https://www.linkedin.com/in/ishaanbajpai/",
+    email: "mailto:eshaangrad@gmail.com",
+    calUsername: "eshaan-bajpai-dboydt",
+    cal: "https://cal.com/eshaan-bajpai-dboydt",
+} as const;
+
 export const techStack = {
     Languages: ["Java", "Python", "Go", "JavaScript", "TypeScript"],
     Frameworks: ["Spring Boot", "FastAPI", "Node.js", "React", "Next.js"],
@@ -103,7 +111,7 @@ export const projects = [
             "Scalable real-time telemetry ingestion and processing platform for distributed systems observability.",
         tech: ["Java", "Spring Boot", "Kafka", "Redis", "PostgreSQL", "OpenTelemetry"],
         links: {
-            github: "https://github.com/Ishaan29/ENPM-818N-Group-12",
+            github: "https://github.com/Ishaan29/opentelemetry-demo",
         },
         image: "/projects/otel.png",
     },

@@ -33,8 +33,8 @@ export const trackEvent = async (
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Use keepalive for unload events
-            keepalive: eventType === 'unload',
+            // Keepalive so flushes fired on unload/pagehide survive navigation
+            keepalive: eventType === 'unload' || eventType === 'section_dwell',
             body: JSON.stringify({
                 visitId,
                 eventType,
@@ -78,21 +78,48 @@ export const useTimeTracking = () => {
     }, []);
 };
 
-// Hook to track when sections come into view
+// Hook to track when sections come into view and accumulate dwell time
 export const useSectionTracking = (sectionName: string) => {
     const ref = useRef<HTMLElement | null>(null);
-    const hasTrackedRef = useRef(false);
 
     useEffect(() => {
         const currentRef = ref.current;
         if (!currentRef) return;
 
+        let intervalId: NodeJS.Timeout | null = null;
+        let isVisible = false;
+        let accumulatedSeconds = 0;
+
+        const flushDwellTime = () => {
+            if (accumulatedSeconds > 0) {
+                trackEvent('section_dwell', sectionName, { seconds: accumulatedSeconds });
+                accumulatedSeconds = 0;
+            }
+        };
+
         const observer = new IntersectionObserver(
             (entries) => {
                 const [entry] = entries;
-                if (entry.isIntersecting && !hasTrackedRef.current) {
-                    trackEvent('scroll', sectionName, { action: 'viewed' });
-                    hasTrackedRef.current = true;
+                isVisible = entry.isIntersecting;
+                
+                if (isVisible) {
+                    if (!intervalId) {
+                        intervalId = setInterval(() => {
+                            // Don't count time while the tab is backgrounded
+                            if (document.hidden) return;
+                            accumulatedSeconds += 1;
+                            if (accumulatedSeconds % 10 === 0) {
+                                trackEvent('section_dwell', sectionName, { seconds: 10 });
+                                accumulatedSeconds = 0;
+                            }
+                        }, 1000);
+                    }
+                } else {
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                        intervalId = null;
+                    }
+                    flushDwellTime();
                 }
             },
             { threshold: 0.3 }
@@ -100,8 +127,16 @@ export const useSectionTracking = (sectionName: string) => {
 
         observer.observe(currentRef);
 
+        const handlePageHide = () => {
+            flushDwellTime();
+        };
+        window.addEventListener('pagehide', handlePageHide);
+
         return () => {
             if (currentRef) observer.unobserve(currentRef);
+            if (intervalId) clearInterval(intervalId);
+            window.removeEventListener('pagehide', handlePageHide);
+            flushDwellTime();
         };
     }, [sectionName]);
 
@@ -150,4 +185,24 @@ export const useEngagementTracking = () => {
 
 export const trackCtaClick = (ctaName: string) => {
     trackEvent('engagement', 'cta_click', { action: ctaName });
+};
+
+export const useOutboundTracking = () => {
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest('a');
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+      let kind = 'outbound';
+      if (href.includes('github.com/Ishaan29')) kind = 'github_click';
+      else if (href.includes('linkedin.com/in/ishaanbajpai')) kind = 'linkedin_click';
+      else if (href.endsWith('.pdf')) kind = 'resume_download';
+      else if (href.startsWith('#')) kind = 'section_jump';
+      else if (a.target === '_blank') kind = 'outbound';
+      else return;
+      trackEvent('engagement', kind, { href, text: a.textContent?.trim() });
+    };
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, []);
 };

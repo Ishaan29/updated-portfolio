@@ -1,0 +1,257 @@
+/* ===== Design tokens ===== */
+:root {
+  --bg: oklch(0.16 0.006 70);
+  --bg-elev: oklch(0.20 0.006 70);
+  --bg-card: oklch(0.22 0.008 70);
+  --bg-card-hover: oklch(0.25 0.008 70);
+  --border: oklch(0.30 0.008 70);
+  --border-strong: oklch(0.40 0.010 70);
+  --fg: oklch(0.97 0.005 70);
+  --fg-muted: oklch(0.72 0.010 70);
+  --fg-dim: oklch(0.55 0.010 70);
+
+  --accent: oklch(0.82 0.135 75);          /* warm amber */
+  --accent-dim: oklch(0.55 0.10 75);
+  --accent-soft: oklch(0.82 0.135 75 / 0.12);
+
+  --good: oklch(0.78 0.13 160);
+  --info: oklch(0.78 0.10 230);
+
+  --serif: 'Instrument Serif', 'Iowan Old Style', 'Apple Garamond', Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, oklch(0.82 0.135 75 / 0.07), transparent 70%),
+    radial-gradient(900px 500px at -10% 30%, oklch(0.55 0.10 75 / 0.06), transparent 70%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+a { color: inherit; }
+
+/* ===== Layout ===== */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+}
+
+section { padding: 96px 0; position: relative; }
+section + section { border-top: 1px solid var(--border); }
+
+@media (max-width: 720px) {
+  section { padding: 64px 0; }
+}
+
+/* ===== Type ===== */
+.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.mono { font-family: var(--mono); }
+
+.muted { color: var(--fg-muted); }
+.dim { color: var(--fg-dim); }
+
+/* ===== Header / nav ===== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+  background: oklch(0.16 0.006 70 / 0.7);
+  border-bottom: 1px solid oklch(0.30 0.008 70 / 0.5);
+}
+.topnav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.brand-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px oklch(0.82 0.135 75 / 0.15);
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  padding: 0; margin: 0;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.nav-links a {
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--fg); }
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: oklch(0.18 0.02 70);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid oklch(0.85 0.12 75);
+  transition: transform 0.15s, filter 0.15s;
+}
+.nav-cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.nav-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--fg-muted);
+}
+.pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 0 oklch(0.78 0.13 160 / 0.6);
+  animation: pulse 2.2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 oklch(0.78 0.13 160 / 0.5); }
+  70% { box-shadow: 0 0 0 8px oklch(0.78 0.13 160 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.78 0.13 160 / 0); }
+}
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.15s, background 0.15s, border-color 0.15s;
+  font-family: var(--sans);
+}
+.btn-primary {
+  background: var(--accent);
+  color: oklch(0.18 0.02 70);
+  border-color: oklch(0.85 0.12 75);
+}
+.btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+.btn-ghost:hover { background: var(--bg-elev); border-color: oklch(0.55 0.01 70); }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* ===== Section header ===== */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.section-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+  padding-bottom: 0.06em;
+}
+.section-head .eyebrow { display: block; margin-bottom: 10px; }
+.section-head .head-aside {
+  max-width: 380px;
+  color: var(--fg-muted);
+  font-size: 15px;
+}
+
+/* ===== Utility ===== */
+.hr {
+  height: 1px;
+  background: var(--border);
+  border: 0;
+  margin: 0;
+}
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: oklch(0.25 0.008 70);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 880px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

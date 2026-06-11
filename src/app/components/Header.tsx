@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Github, Linkedin, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ThemeToggle";
-import { resumeUrl } from "@/lib/constants";
+import { resumeUrl, socialLinks } from "@/lib/constants";
 import { trackEvent } from "@/lib/tracking";
 
 const navLinks = [
@@ -109,7 +109,7 @@ export default function Header() {
                 <li className="mr-5 text-xs">
                     <a
                         className="block hover:text-slate"
-                        href="https://github.com/Ishaan29"
+                        href={socialLinks.github}
                         target="_blank"
                         rel="noreferrer noopener"
                         onClick={() => trackEvent('click', 'github', { location: 'header' })}
@@ -121,7 +121,7 @@ export default function Header() {
                 <li className="mr-5 text-xs">
                     <a
                         className="block hover:text-slate"
-                        href="https://www.linkedin.com/in/ishaanbajpai/"
+                        href={socialLinks.linkedin}
                         target="_blank"
                         rel="noreferrer noopener"
                         onClick={() => trackEvent('click', 'linkedin', { location: 'header' })}
@@ -133,7 +133,7 @@ export default function Header() {
                 <li className="mr-5 text-xs">
                     <a
                         className="block hover:text-slate"
-                        href="mailto:eshaangrad@gmail.com"
+                        href={socialLinks.email}
                         target="_blank"
                         rel="noreferrer noopener"
                         onClick={() => trackEvent('click', 'email', { location: 'header' })}
