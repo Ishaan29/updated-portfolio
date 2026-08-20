@@ -6,6 +6,8 @@ import { OverviewTab } from '@/app/components/dashboard/OverviewTab';
 import { LeadsTab } from '@/app/components/dashboard/LeadsTab';
 import { ChannelsTab } from '@/app/components/dashboard/ChannelsTab';
 import { SessionsTab } from '@/app/components/dashboard/SessionsTab';
+import { ResumesTab } from '@/app/components/dashboard/ResumesTab';
+import { ProjectsTab } from '@/app/components/dashboard/ProjectsTab';
 import { DashboardData } from '@/app/components/dashboard/lib/types';
 import '@/app/components/dashboard/ops.css';
 
@@ -118,6 +120,8 @@ export default function AdminVisitsPage() {
             )}
             {activeTab === 'Channels' && <ChannelsTab data={data} />}
             {activeTab === 'Sessions' && <SessionsTab accessToken={accessToken} />}
+            {activeTab === 'Resumes' && <ResumesTab accessToken={accessToken} />}
+            {activeTab === 'Projects' && <ProjectsTab accessToken={accessToken} />}
         </Shell>
     );
 }
