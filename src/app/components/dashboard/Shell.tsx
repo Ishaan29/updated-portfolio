@@ -10,6 +10,8 @@ const CRUMBS: Record<string, [string, string]> = {
     Leads: ['pipeline', 'leads'],
     Channels: ['attribution', 'channels'],
     Sessions: ['raw', 'session stream'],
+    Resumes: ['documents', 'resume links'],
+    Projects: ['documents', 'project links'],
 };
 
 function exportCsv(data: DashboardData) {
@@ -57,6 +59,8 @@ export function Shell({
         { k: 'Leads', count: data?.companies.length ?? null },
         { k: 'Channels', count: channelCount },
         { k: 'Sessions', count: data?.summary.totalVisits ?? null },
+        { k: 'Resumes', count: null },
+        { k: 'Projects', count: null },
     ];
 
     const visits7d = data?.dailySeries?.slice(-7).reduce((s, d) => s + d.visits, 0) ?? 0;

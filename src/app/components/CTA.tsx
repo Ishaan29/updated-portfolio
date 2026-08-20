@@ -55,10 +55,6 @@ export default function CTA() {
                 <span className={`mono ${styles.ctaK}`}>résumé</span>
                 <a className={styles.ctaLink} href={resumeUrl} download>download PDF ↓</a>
               </div>
-              <div className={styles.ctaRow}>
-                <span className={`mono ${styles.ctaK}`}>refs</span>
-                <span className={styles.ctaV}>happy to connect you with former managers / senior teammates on request</span>
-              </div>
             </div>
           </div>
 

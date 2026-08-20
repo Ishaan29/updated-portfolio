@@ -37,6 +37,52 @@ export interface OutreachLog {
     created_at: string;
 }
 
+export interface Resume {
+    id: string;
+    company_id: string;
+    role: string | null;
+    storage_path: string;
+    filename: string | null;
+    active: boolean;
+    created_at: string;
+}
+
+export interface ResumeView {
+    id: string;
+    resume_id: string;
+    company_id: string;
+    user_agent: string | null;
+    referrer: string | null;
+    ip_address: string | null;
+    device_type: string | null;
+    city: string | null;
+    region: string | null;
+    country: string | null;
+    viewed_at: string;
+}
+
+export interface ProjectLink {
+    slug: string;
+    target_url: string;
+    title: string | null;
+    active: boolean;
+    created_at: string;
+}
+
+export interface ProjectClick {
+    id: string;
+    slug: string;
+    company_id: string | null;
+    user_agent: string | null;
+    referrer: string | null;
+    ip_address: string | null;
+    device_type: string | null;
+    city: string | null;
+    region: string | null;
+    country: string | null;
+    clicked_at: string;
+}
+
 export interface VisitAnalytics {
     company_id: string;
     total_visits: number;
@@ -115,4 +161,21 @@ export function isValidCompanyId(companyId: string): boolean {
 export function sanitizeCompanyId(companyId: string): string {
     if (!companyId) return '';
     return companyId.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-');
+}
+
+// Project slugs live under /project/, so they cannot shadow a real route.
+// They are matched case-insensitively with ILIKE, so the charset deliberately
+// excludes '_' and '%' — both are LIKE wildcards.
+export function isValidProjectSlug(slug: string): boolean {
+    return /^[A-Za-z0-9][A-Za-z0-9-]{1,38}$/.test(slug);
+}
+
+// Only real web destinations — never javascript:, data: or similar
+export function isValidTargetUrl(url: string): boolean {
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    } catch {
+        return false;
+    }
 }
