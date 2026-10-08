@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Panel } from './primitives/Panel';
+import { TabLoadCallbacks } from './lib/types';
 import { ChannelChip } from './primitives/ChannelChip';
 
-export function SessionsTab({ accessToken }: { accessToken: string }) {
+export function SessionsTab({ accessToken, refreshKey = 0, onTabLoading, onTabLoaded }: { accessToken: string; refreshKey?: number } & TabLoadCallbacks) {
     const [sessions, setSessions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('ALL');
 
     useEffect(() => {
         const fetchSessions = async () => {
+            onTabLoading?.();
             try {
                 const res = await fetch(`/api/visits/sessions?limit=100`, {
                     headers: { Authorization: `Bearer ${accessToken}` }
@@ -21,10 +23,11 @@ export function SessionsTab({ accessToken }: { accessToken: string }) {
                 console.error(err);
             } finally {
                 setLoading(false);
+                onTabLoaded?.();
             }
         };
         fetchSessions();
-    }, [accessToken]);
+    }, [accessToken, refreshKey, onTabLoading, onTabLoaded]);
 
     const filters = ['ENGAGED ONLY', 'ALL', 'COLDAPP', 'COLDOUTREACH', 'HMOUTREACH', 'ORGANIC'];
 

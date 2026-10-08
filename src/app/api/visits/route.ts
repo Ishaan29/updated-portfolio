@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
+import { getSessionStats } from '@/lib/sessionStats';
 
 // Simple authentication middleware
 function isAuthenticated(request: NextRequest): boolean {
@@ -43,55 +44,24 @@ function calculateHeatScore(visits: any[]) {
     let engagedCount = 0;
 
     for (const v of visits) {
-        let isEngaged = false;
-        let sessionDuration = 0;
-        let maxScroll = 0;
-        const viewedSections = new Set<string>();
+        const stats = getSessionStats(v.visit_events);
+        const { duration: sessionDuration, maxScroll } = stats;
 
-        for (const e of (v.visit_events || [])) {
-            // Calculate time metrics
-            if (e.event_type === 'unload' || e.event_type === 'visibility') {
-                const duration = e.metadata?.duration_seconds || 0;
-                sessionDuration = Math.max(sessionDuration, duration);
-            }
-            if (e.event_type === 'engagement' && e.event_name === 'heartbeat') {
-                // Approximate total duration by counting heartbeats x 30s
-                sessionDuration += e.metadata?.interval || 30; // Every heartbeat adds ~30s
-            }
-            
-            // Calculate scroll and depth
-            if (e.event_type === 'engagement' && e.event_name === 'scroll_depth') {
-                maxScroll = Math.max(maxScroll, e.metadata?.depth || 0);
-            }
-            if (e.event_type === 'scroll' && e.event_name) {
-                viewedSections.add(e.event_name);
-            }
-            
-            // Major boost for CTA clicks
-            if (e.event_type === 'engagement' && e.event_name === 'cta_click') {
-                maxEngagementScore = 25;
-            }
+        if (stats.isEngaged) engagedCount++;
+
+        // Major boost for CTA clicks
+        if ((v.visit_events || []).some((e: any) => e.event_type === 'engagement' && e.event_name === 'cta_click')) {
+            maxEngagementScore = 25;
         }
 
-        // Check if Engaged Visit (>30s AND >25% scroll)
-        if (sessionDuration > 30 && maxScroll >= 25) {
-            isEngaged = true;
-            engagedCount++;
-        }
-
-        const currentEngagement = isEngaged ? 25 : Math.min((sessionDuration / 30) * 12.5 + (maxScroll / 100) * 12.5, 25);
+        const currentEngagement = stats.isEngaged ? 25 : Math.min((sessionDuration / 30) * 12.5 + (maxScroll / 100) * 12.5, 25);
         maxEngagementScore = Math.max(maxEngagementScore, currentEngagement);
 
-        const currentDepth = Math.min((viewedSections.size / 4) * 15, 15);
+        const currentDepth = Math.min((stats.sections.length / 4) * 15, 15);
         maxDepthScore = Math.max(maxDepthScore, currentDepth);
-        
+
         // Attach processed session stats to the visit object for frontend
-        v.sessionStats = { 
-            duration: sessionDuration, 
-            maxScroll, 
-            sections: Array.from(viewedSections), 
-            isEngaged 
-        };
+        v.sessionStats = stats;
     }
 
     const totalScore = Math.round(recencyScore + frequencyScore + maxEngagementScore + maxDepthScore);

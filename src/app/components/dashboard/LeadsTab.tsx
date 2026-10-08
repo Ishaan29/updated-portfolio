@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { DashboardData, CompanyLead } from './lib/types';
+import { DashboardData, CompanyLead, TabLoadCallbacks } from './lib/types';
 import { Panel } from './primitives/Panel';
 import { HeatBadge } from './primitives/HeatBadge';
 import { ChannelChip } from './primitives/ChannelChip';
@@ -26,13 +26,17 @@ export function LeadsTab({
     openLeadId,
     onOpenLead,
     onCloseLead,
+    refreshKey = 0,
+    onTabLoading,
+    onTabLoaded,
 }: {
     data: DashboardData | null;
     accessToken: string;
     openLeadId: string | null;
     onOpenLead: (companyId: string) => void;
     onCloseLead: () => void;
-}) {
+    refreshKey?: number;
+} & TabLoadCallbacks) {
     const [sortKey, setSortKey] = useState<SortKey>('heat');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
     const [filter, setFilter] = useState<Filter>('all');
@@ -74,7 +78,7 @@ export function LeadsTab({
 
     const openLead = openLeadId ? data.companies.find((c) => c.companyId === openLeadId) : null;
     if (openLead) {
-        return <LeadDetail lead={openLead} onBack={onCloseLead} accessToken={accessToken} />;
+        return <LeadDetail lead={openLead} onBack={onCloseLead} accessToken={accessToken} refreshKey={refreshKey} onTabLoading={onTabLoading} onTabLoaded={onTabLoaded} />;
     }
 
     const flip = (k: SortKey) => {

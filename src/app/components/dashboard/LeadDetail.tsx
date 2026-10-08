@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CompanyLead } from './lib/types';
+import { CompanyLead, TabLoadCallbacks } from './lib/types';
 import { Panel } from './primitives/Panel';
 import { HeatBadge } from './primitives/HeatBadge';
 import { StatusChip } from './primitives/StatusChip';
@@ -29,12 +29,13 @@ function countEvents(visits: any[], name: string) {
     );
 }
 
-export function LeadDetail({ lead, onBack, accessToken }: { lead: CompanyLead; onBack: () => void; accessToken: string }) {
+export function LeadDetail({ lead, onBack, accessToken, refreshKey = 0, onTabLoading, onTabLoaded }: { lead: CompanyLead; onBack: () => void; accessToken: string; refreshKey?: number } & TabLoadCallbacks) {
     const [detail, setDetail] = useState<DetailData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDetail = async () => {
+            onTabLoading?.();
             try {
                 const res = await fetch(`/api/visits/leads/${lead.companyId}`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
@@ -47,10 +48,11 @@ export function LeadDetail({ lead, onBack, accessToken }: { lead: CompanyLead; o
                 console.error(err);
             } finally {
                 setLoading(false);
+                onTabLoaded?.();
             }
         };
         fetchDetail();
-    }, [lead.companyId, accessToken]);
+    }, [lead.companyId, accessToken, refreshKey, onTabLoading, onTabLoaded]);
 
     const visits = detail?.visits ?? [];
 

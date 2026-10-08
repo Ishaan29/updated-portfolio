@@ -34,12 +34,18 @@ export function Shell({
     activeTab,
     onTabChange,
     onLogout,
+    onRefresh,
+    refreshing = false,
+    lastUpdated = null,
     data,
 }: {
     children: ReactNode;
     activeTab: string;
     onTabChange: (tab: string) => void;
     onLogout: () => void;
+    onRefresh?: () => void;
+    refreshing?: boolean;
+    lastUpdated?: Date | null;
     data: DashboardData | null;
 }) {
     const [showLinkGen, setShowLinkGen] = useState(false);
@@ -109,6 +115,16 @@ export function Shell({
                         {crumb[0]} / <b>{crumb[1]}</b>
                     </span>
                     <span className="spacer" />
+                    {lastUpdated && (
+                        <span className="text-dim">
+                            updated {lastUpdated.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                        </span>
+                    )}
+                    {onRefresh && (
+                        <button className="tool" onClick={onRefresh} disabled={refreshing}>
+                            {refreshing ? '↻ Refreshing…' : '↻ Refresh'}
+                        </button>
+                    )}
                     <button className="tool primary" onClick={() => setShowLinkGen(true)}>
                         ◫ Generate tracking link
                     </button>
