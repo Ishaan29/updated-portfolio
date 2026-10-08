@@ -96,3 +96,9 @@ export interface DashboardData {
     referrers: Array<{ name: string; count: number }>;
     topCompaniesByChannel: Record<string, Array<{ companyId: string; visits: number; heatScore: number }>>;
 }
+
+// Lets a tab that fetches its own data tell the page when a load starts and ends
+export interface TabLoadCallbacks {
+    onTabLoading?: () => void;
+    onTabLoaded?: () => void;
+}

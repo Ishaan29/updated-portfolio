@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { TabLoadCallbacks } from './lib/types';
 import { Panel } from './primitives/Panel';
 import { Sparkline } from './primitives/Sparkline';
 
@@ -38,7 +39,7 @@ function fmtDay(iso: string | null) {
 
 const th = 'py-2 px-3 text-[10px] font-normal text-slate uppercase tracking-widest';
 
-export function ResumesTab({ accessToken, refreshKey = 0 }: { accessToken: string; refreshKey?: number }) {
+export function ResumesTab({ accessToken, refreshKey = 0, onTabLoading, onTabLoaded }: { accessToken: string; refreshKey?: number } & TabLoadCallbacks) {
     const [resumes, setResumes] = useState<ResumeRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
@@ -55,6 +56,7 @@ export function ResumesTab({ accessToken, refreshKey = 0 }: { accessToken: strin
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
     const fetchResumes = useCallback(async () => {
+        onTabLoading?.();
         try {
             const res = await fetch('/api/resumes', {
                 headers: { Authorization: `Bearer ${accessToken}` },
@@ -67,8 +69,9 @@ export function ResumesTab({ accessToken, refreshKey = 0 }: { accessToken: strin
             console.error(err);
         } finally {
             setLoading(false);
+            onTabLoaded?.();
         }
-    }, [accessToken]);
+    }, [accessToken, onTabLoading, onTabLoaded]);
 
     useEffect(() => {
         fetchResumes();

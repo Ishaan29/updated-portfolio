@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Shell } from '@/app/components/dashboard/Shell';
 import { OverviewTab } from '@/app/components/dashboard/OverviewTab';
 import { LeadsTab } from '@/app/components/dashboard/LeadsTab';
@@ -24,6 +24,8 @@ export default function AdminVisitsPage() {
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
     // Bumped on manual refresh so tabs that load their own data refetch too
     const [refreshKey, setRefreshKey] = useState(0);
+    // Each dashboard fetch pulls every visit, so never run two at once
+    const inFlight = useRef<Promise<void> | null>(null);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,8 +51,14 @@ export default function AdminVisitsPage() {
         }
     };
 
-    const fetchDashboard = async () => {
-        if (!isAuthenticated) return;
+    const fetchDashboard = () => {
+        if (!isAuthenticated) return Promise.resolve();
+        if (inFlight.current) return inFlight.current;
+        inFlight.current = loadDashboard().finally(() => { inFlight.current = null; });
+        return inFlight.current;
+    };
+
+    const loadDashboard = async () => {
         try {
             const res = await fetch('/api/visits', { headers: { Authorization: `Bearer ${accessToken}` } });
             if (res.ok) {
@@ -63,12 +71,21 @@ export default function AdminVisitsPage() {
         }
     };
 
+    // Tabs that load their own data report back through onTabLoaded so the
+    // button stays disabled until every request for this refresh has finished
+    const pendingTabLoads = useRef(0);
     const refreshAll = async () => {
+        if (refreshing) return;
         setRefreshing(true);
         setRefreshKey((k) => k + 1);
         await fetchDashboard();
-        setRefreshing(false);
+        if (pendingTabLoads.current === 0) setRefreshing(false);
     };
+    const onTabLoading = useCallback(() => { pendingTabLoads.current++; }, []);
+    const onTabLoaded = useCallback(() => {
+        pendingTabLoads.current = Math.max(0, pendingTabLoads.current - 1);
+        if (pendingTabLoads.current === 0 && !inFlight.current) setRefreshing(false);
+    }, []);
 
     // Every refresh pulls all visits + events from Supabase, so poll slowly and
     // only while the tab is visible; catch up as soon as it is focused again.
@@ -141,12 +158,14 @@ export default function AdminVisitsPage() {
                     onOpenLead={openLead}
                     onCloseLead={() => setOpenLeadId(null)}
                     refreshKey={refreshKey}
+                    onTabLoading={onTabLoading}
+                    onTabLoaded={onTabLoaded}
                 />
             )}
             {activeTab === 'Channels' && <ChannelsTab data={data} />}
-            {activeTab === 'Sessions' && <SessionsTab accessToken={accessToken} refreshKey={refreshKey} />}
-            {activeTab === 'Resumes' && <ResumesTab accessToken={accessToken} refreshKey={refreshKey} />}
-            {activeTab === 'Projects' && <ProjectsTab accessToken={accessToken} refreshKey={refreshKey} />}
+            {activeTab === 'Sessions' && <SessionsTab accessToken={accessToken} refreshKey={refreshKey} onTabLoading={onTabLoading} onTabLoaded={onTabLoaded} />}
+            {activeTab === 'Resumes' && <ResumesTab accessToken={accessToken} refreshKey={refreshKey} onTabLoading={onTabLoading} onTabLoaded={onTabLoaded} />}
+            {activeTab === 'Projects' && <ProjectsTab accessToken={accessToken} refreshKey={refreshKey} onTabLoading={onTabLoading} onTabLoaded={onTabLoaded} />}
         </Shell>
     );
 }

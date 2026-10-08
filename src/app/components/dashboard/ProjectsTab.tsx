@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { TabLoadCallbacks } from './lib/types';
 import { Panel } from './primitives/Panel';
 import { Sparkline } from './primitives/Sparkline';
 
@@ -43,7 +44,7 @@ function shortTarget(url: string) {
 
 const th = 'py-2 px-3 text-[10px] font-normal text-slate uppercase tracking-widest';
 
-export function ProjectsTab({ accessToken, refreshKey = 0 }: { accessToken: string; refreshKey?: number }) {
+export function ProjectsTab({ accessToken, refreshKey = 0, onTabLoading, onTabLoaded }: { accessToken: string; refreshKey?: number } & TabLoadCallbacks) {
     const [projects, setProjects] = useState<ProjectRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
@@ -61,6 +62,7 @@ export function ProjectsTab({ accessToken, refreshKey = 0 }: { accessToken: stri
     const authHeaders = { Authorization: `Bearer ${accessToken}` };
 
     const fetchProjects = useCallback(async () => {
+        onTabLoading?.();
         try {
             const res = await fetch('/api/projects', {
                 headers: { Authorization: `Bearer ${accessToken}` },
@@ -73,8 +75,9 @@ export function ProjectsTab({ accessToken, refreshKey = 0 }: { accessToken: stri
             console.error(err);
         } finally {
             setLoading(false);
+            onTabLoaded?.();
         }
-    }, [accessToken]);
+    }, [accessToken, onTabLoading, onTabLoaded]);
 
     useEffect(() => {
         fetchProjects();
