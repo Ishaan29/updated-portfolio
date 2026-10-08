@@ -108,8 +108,18 @@ export default function VisitsDashboard({ accessToken }: { accessToken: string }
 
     useEffect(() => {
         fetchDashboard();
-        const interval = setInterval(fetchDashboard, 30000);
-        return () => clearInterval(interval);
+        // Each refresh pulls all visits + events, so poll slowly and only when visible
+        const interval = setInterval(() => {
+            if (document.visibilityState === 'visible') fetchDashboard();
+        }, 5 * 60 * 1000);
+        const onVisible = () => {
+            if (document.visibilityState === 'visible') fetchDashboard();
+        };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
     }, [accessToken]); // Exclude selectedCompany from deps to avoid re-triggering, handled inside fetch
 
     const handleGenerateLink = () => {

@@ -149,7 +149,11 @@ export const useEngagementTracking = () => {
 
     useEffect(() => {
         // 1. Heartbeat (every 30s)
+        // Skip hidden tabs and stop after 30 min so a forgotten tab doesn't log forever
+        let heartbeats = 0;
         const heartbeatInterval = setInterval(() => {
+            if (document.visibilityState !== 'visible') return;
+            if (++heartbeats > 60) return clearInterval(heartbeatInterval);
             trackEvent('engagement', 'heartbeat', { 
                 action: 'ping',
                 interval: 30

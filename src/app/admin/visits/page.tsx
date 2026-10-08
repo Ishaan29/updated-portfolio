@@ -57,10 +57,21 @@ export default function AdminVisitsPage() {
         }
     };
 
+    // Every refresh pulls all visits + events from Supabase, so poll slowly and
+    // only while the tab is visible; catch up as soon as it is focused again.
     useEffect(() => {
         if (isAuthenticated) {
-            const interval = setInterval(fetchDashboard, 30000);
-            return () => clearInterval(interval);
+            const interval = setInterval(() => {
+                if (document.visibilityState === 'visible') fetchDashboard();
+            }, 5 * 60 * 1000);
+            const onVisible = () => {
+                if (document.visibilityState === 'visible') fetchDashboard();
+            };
+            document.addEventListener('visibilitychange', onVisible);
+            return () => {
+                clearInterval(interval);
+                document.removeEventListener('visibilitychange', onVisible);
+            };
         }
     }, [isAuthenticated, accessToken]);
 
