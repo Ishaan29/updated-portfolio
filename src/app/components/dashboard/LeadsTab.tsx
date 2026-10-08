@@ -26,12 +26,14 @@ export function LeadsTab({
     openLeadId,
     onOpenLead,
     onCloseLead,
+    refreshKey = 0,
 }: {
     data: DashboardData | null;
     accessToken: string;
     openLeadId: string | null;
     onOpenLead: (companyId: string) => void;
     onCloseLead: () => void;
+    refreshKey?: number;
 }) {
     const [sortKey, setSortKey] = useState<SortKey>('heat');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -74,7 +76,7 @@ export function LeadsTab({
 
     const openLead = openLeadId ? data.companies.find((c) => c.companyId === openLeadId) : null;
     if (openLead) {
-        return <LeadDetail lead={openLead} onBack={onCloseLead} accessToken={accessToken} />;
+        return <LeadDetail lead={openLead} onBack={onCloseLead} accessToken={accessToken} refreshKey={refreshKey} />;
     }
 
     const flip = (k: SortKey) => {

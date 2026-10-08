@@ -38,7 +38,7 @@ function fmtDay(iso: string | null) {
 
 const th = 'py-2 px-3 text-[10px] font-normal text-slate uppercase tracking-widest';
 
-export function ResumesTab({ accessToken }: { accessToken: string }) {
+export function ResumesTab({ accessToken, refreshKey = 0 }: { accessToken: string; refreshKey?: number }) {
     const [resumes, setResumes] = useState<ResumeRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export function ResumesTab({ accessToken }: { accessToken: string }) {
 
     useEffect(() => {
         fetchResumes();
-    }, [fetchResumes]);
+    }, [fetchResumes, refreshKey]);
 
     const upload = async (e: React.FormEvent) => {
         e.preventDefault();

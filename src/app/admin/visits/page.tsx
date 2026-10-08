@@ -20,6 +20,10 @@ export default function AdminVisitsPage() {
 
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    // Bumped on manual refresh so tabs that load their own data refetch too
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,6 +36,7 @@ export default function AdminVisitsPage() {
             if (res.ok) {
                 const result = await res.json();
                 setData(result.data);
+                setLastUpdated(new Date());
                 setIsAuthenticated(true);
                 setError('');
             } else {
@@ -51,10 +56,18 @@ export default function AdminVisitsPage() {
             if (res.ok) {
                 const result = await res.json();
                 setData(result.data);
+                setLastUpdated(new Date());
             }
         } catch {
             console.error('Failed to refresh data');
         }
+    };
+
+    const refreshAll = async () => {
+        setRefreshing(true);
+        setRefreshKey((k) => k + 1);
+        await fetchDashboard();
+        setRefreshing(false);
     };
 
     // Every refresh pulls all visits + events from Supabase, so poll slowly and
@@ -118,7 +131,7 @@ export default function AdminVisitsPage() {
     }
 
     return (
-        <Shell activeTab={activeTab} onTabChange={changeTab} onLogout={() => { setIsAuthenticated(false); setData(null); }} data={data}>
+        <Shell activeTab={activeTab} onTabChange={changeTab} onLogout={() => { setIsAuthenticated(false); setData(null); }} onRefresh={refreshAll} refreshing={refreshing} lastUpdated={lastUpdated} data={data}>
             {activeTab === 'Overview' && <OverviewTab data={data} onOpenLead={openLead} />}
             {activeTab === 'Leads' && (
                 <LeadsTab
@@ -127,12 +140,13 @@ export default function AdminVisitsPage() {
                     openLeadId={openLeadId}
                     onOpenLead={openLead}
                     onCloseLead={() => setOpenLeadId(null)}
+                    refreshKey={refreshKey}
                 />
             )}
             {activeTab === 'Channels' && <ChannelsTab data={data} />}
-            {activeTab === 'Sessions' && <SessionsTab accessToken={accessToken} />}
-            {activeTab === 'Resumes' && <ResumesTab accessToken={accessToken} />}
-            {activeTab === 'Projects' && <ProjectsTab accessToken={accessToken} />}
+            {activeTab === 'Sessions' && <SessionsTab accessToken={accessToken} refreshKey={refreshKey} />}
+            {activeTab === 'Resumes' && <ResumesTab accessToken={accessToken} refreshKey={refreshKey} />}
+            {activeTab === 'Projects' && <ProjectsTab accessToken={accessToken} refreshKey={refreshKey} />}
         </Shell>
     );
 }

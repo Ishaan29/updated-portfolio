@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Panel } from './primitives/Panel';
 import { ChannelChip } from './primitives/ChannelChip';
 
-export function SessionsTab({ accessToken }: { accessToken: string }) {
+export function SessionsTab({ accessToken, refreshKey = 0 }: { accessToken: string; refreshKey?: number }) {
     const [sessions, setSessions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('ALL');
@@ -24,7 +24,7 @@ export function SessionsTab({ accessToken }: { accessToken: string }) {
             }
         };
         fetchSessions();
-    }, [accessToken]);
+    }, [accessToken, refreshKey]);
 
     const filters = ['ENGAGED ONLY', 'ALL', 'COLDAPP', 'COLDOUTREACH', 'HMOUTREACH', 'ORGANIC'];
 

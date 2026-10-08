@@ -238,6 +238,7 @@
 .ops .ops-toolbar .tool:hover { color: var(--fg); background: oklch(0.20 0.006 70); }
 .ops .ops-toolbar .tool.primary { color: var(--accent); }
 .ops .ops-toolbar .tool.primary:hover { background: oklch(0.82 0.135 75 / 0.08); }
+.ops .ops-toolbar .tool:disabled { opacity: 0.6; cursor: wait; }
 
 /* ---------- Main canvas ---------- */
 .ops .ops-main {

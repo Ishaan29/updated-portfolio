@@ -29,7 +29,7 @@ function countEvents(visits: any[], name: string) {
     );
 }
 
-export function LeadDetail({ lead, onBack, accessToken }: { lead: CompanyLead; onBack: () => void; accessToken: string }) {
+export function LeadDetail({ lead, onBack, accessToken, refreshKey = 0 }: { lead: CompanyLead; onBack: () => void; accessToken: string; refreshKey?: number }) {
     const [detail, setDetail] = useState<DetailData | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,7 @@ export function LeadDetail({ lead, onBack, accessToken }: { lead: CompanyLead; o
             }
         };
         fetchDetail();
-    }, [lead.companyId, accessToken]);
+    }, [lead.companyId, accessToken, refreshKey]);
 
     const visits = detail?.visits ?? [];
 
